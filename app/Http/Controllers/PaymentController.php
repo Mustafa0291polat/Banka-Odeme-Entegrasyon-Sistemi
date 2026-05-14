@@ -24,7 +24,13 @@ class PaymentController extends Controller
 
     public function processPayment(Request $request)
     {
-     
+        // YENİ LOG: İstek geldiği an kaydediliyor (Güvenlik için kart no ve CVV hariç tutuldu)
+        Log::info('Ödeme işlemi başlatıldı, form verileri alındı.', [
+            'amount' => $request->amount,
+            'name' => $request->first_name . ' ' . $request->last_name,
+            'ip' => $request->ip()
+        ]);
+
         try {
             $request->merge([
                 'card_no' => str_replace(
@@ -40,8 +46,10 @@ class PaymentController extends Controller
                 'phone' => 'required|string|max:20',
                 'amount' => 'required|numeric|min:1',
                 'card_no' => 'required|digits:16',
-                'expiry_month' => 'required|digits:2',
-                'expiry_year' => 'required|digits:2',
+                // Ay 01 ile 12 arasında olmalı (Regex ile kontrol ediyoruz)
+                'expiry_month' => ['required', 'string', 'size:2', 'regex:/^(0[1-9]|1[0-2])$/'], 
+                // Yıl en az şu anki yıl (örneğin 24) olmalı ki tarihi geçmiş kart girilmesin
+                'expiry_year' => 'required|digits:2|numeric|min:' . date('y'),
                 'cvv' => 'required|digits_between:3,4',
             ]);
 
@@ -59,18 +67,28 @@ class PaymentController extends Controller
             $response = $this->paymentService->initiatePayment($dto);
 
             if (!$response['status']) {
+                // YENİ LOG: Servis tarafında hata dönerse
+                Log::warning('Ödeme başlatılamadı, servisten hata döndü.', ['error' => $response['message']]);
+                
                 return back()->withErrors([
                     'error' => $response['message']
                 ]);
             }
 
-            return view(
-                'payment.redirect',
-                [
-                    'apiUrl' => $response['apiUrl'],
-                    'postData' => $response['postData']
-                ]
-            );
+            // YENİ LOG: Banka 3D sayfasına yönlendirmeden hemen önce
+            Log::info('Kullanıcı Finansbank 3D Secure sayfasına yönlendiriliyor.');
+
+            $response = $this->paymentService->initiatePayment($dto);
+
+            if (!$response['status']) {
+                Log::warning('Ödeme başlatılamadı, servisten hata döndü.', ['error' => $response['message']]);
+                return back()->withErrors(['error' => $response['message']]);
+            }
+
+            Log::info('Kullanıcı Finansbank 3D Secure sayfasına yönlendiriliyor.');
+            
+            // DİKKAT: Artık view'e gitmiyoruz, servisten gelen HTML'i direkt basıyoruz!
+            return response($response['html_content']);
 
         } catch (\Exception $e) {
             Log::error(
