@@ -1,58 +1,81 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# QNB Finansbank VPOS 3D Secure Laravel Entegrasyonu 💳
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Bu proje, **Laravel 11** ve **Docker (Laravel Sail)** kullanılarak geliştirilmiş, profesyonel bir sanal POS ödeme entegrasyonu örneğidir. QNB Finansbank'ın 3D Secure (Payfor) altyapısını kullanarak ödeme alma, doğrulama ve hata yönetimi süreçlerini içerir.
 
-## About Laravel
+## 🛠 Teknik Özellikler
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **PHP 8.3 & Laravel 11**
+- **Docker & Laravel Sail** (Sektör standardı izolasyon)
+- **SQLite** (Hızlı kurulum için veritabanı dosyası)
+- **3D Secure Payfor Altyapısı**
+- **Logging System** (Banka yanıtlarının detaylı takibi)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Hızlı Kurulum
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Bilgisayarınızda **Docker Desktop** yüklü olması yeterlidir. Başka hiçbir şeye (PHP, MySQL vb.) ihtiyacınız yoktur.
+1. Adım: Docker Desktop Kurulumu (Zorunlu)
+Docker komutlarının çalışması için bilgisayarında bir "motor" olması lazım.
 
-## Learning Laravel
+Docker Desktop adresine git ve Windows sürümünü indir.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Kurulumu yap (Kurulum sırasında "Use WSL 2 instead of Hyper-V" seçeneğinin işaretli olduğundan emin ol).
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Bilgisayarını yeniden başlatmanı isteyecektir, başlat.
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+2. Adım: Docker'ı Başlat
+Bilgisayarın açıldığında Docker Desktop uygulamasını çalıştır. Sağ altta küçük bir balina ikonu göreceksin. O ikon yeşil olana kadar (Engine Running yazana kadar) bekle.
 
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
+### 1. Projeyi Klonlayın
 ```bash
-composer require laravel/boost --dev
+git clone [https://github.com/Mustafa0291polat/Banka-Odeme-Entegrasyon-Sistemi.git](https://github.com/Mustafa0291polat/Banka-Odeme-Entegrasyon-Sistemi.git)
+cd Banka-Odeme-Entegrasyon-Sistemi
+(Not: ZIP olarak indirdiyseniz klasör isminin sonuna -main ekleyerek girin).
 
-php artisan boost:install
-```
+### 2. Bağımlılıkları Yükleyin (Docker ile)
+# Linux ve macOS için:
+docker run --rm -u "$(id -u):$(id -g)" -v "$(pwd):/var/www/html" -w /var/www/html laravelsail/php83-composer:latest composer install --ignore-platform-reqs
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+# Windows (PowerShell) için:
+docker run --rm -v ${PWD}:/var/www/html -w /var/www/html laravelsail/php83-composer:latest composer install --ignore-platform-reqs
 
-## Contributing
+### 3. Çevresel Değişkenleri Hazırlayın
+ cp .env.example .env
+`.env` dosyasını açın ve `APP_URL` kısmını (bir sonraki adımda alacağınız) tünel URL'i ile güncelleyin.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### 4. Projeyi Ayağa Kaldırın
+# Linux ve macOS için:
 
-## Code of Conduct
+./vendor/bin/sail up -d
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+# Windows (PowerShell) için:
 
-## Security Vulnerabilities
+.\vendor\bin\sail up -d
+.\vendor\bin\sail artisan key:generate
+.\vendor\bin\sail artisan migrate
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🌍 Dış Dünyaya Açılma (Webhook Handling)
 
-## License
+Bankanın ödeme sonucunu `callback` adresinize gönderebilmesi için localhost'unuzu internete açmanız gerekir.
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+**Tavsiye Edilen:**
+
+./vendor/bin/sail share
+
+Ekranda verilen URL'i kopyalayın ve `.env` içindeki `FINANSBANK_SUCCESS_URL` ile `FINANSBANK_FAIL_URL` değişkenlerine yapıştırın. (Alternatif olarak `ngrok http 80` kullanabilirsiniz).
+
+## 🧪 Test Senaryoları ve Kartlar
+
+Proje şu an **Test (Sandbox)** ortamına ayarlıdır. `FinansbankPaymentService.php` içindeki API bilgileri QNB test terminaline aittir.
+
+| Senaryo | Kart Numarası | Son Kullanma | CVV | Tutar | Beklenen Sonuç |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Başarılı** | `4022 7801 9828 3155` | 12 / 29 | 123 | 1.00 TL | 00 - Onay |
+| **Yetersiz Bakiye** | `4022 7801 9828 3155` | 12 / 29 | 123 | 50.000 TL | 51 - Red |
+| **Hatalı Şifre** | Herhangi bir kart | 12 / 29 | 123 | 1.00 TL | 3D Doğrulama Hatası |
+
+## 🔍 Log Takibi
+
+Banka ile yapılan tüm iletişim `storage/logs/laravel.log` dosyasına kaydedilir. Hata durumunda logları şu komutla canlı izleyebilirsiniz:
+./vendor/bin/sail artisan logs

@@ -24,7 +24,7 @@ class PaymentController extends Controller
 
     public function processPayment(Request $request)
     {
-        // YENİ LOG: İstek geldiği an kaydediliyor (Güvenlik için kart no ve CVV hariç tutuldu)
+        
         Log::info('Ödeme işlemi başlatıldı, form verileri alındı.', [
             'amount' => $request->amount,
             'name' => $request->first_name . ' ' . $request->last_name,
@@ -48,7 +48,7 @@ class PaymentController extends Controller
                 'card_no' => 'required|digits:16',
                 // Ay 01 ile 12 arasında olmalı (Regex ile kontrol ediyoruz)
                 'expiry_month' => ['required', 'string', 'size:2', 'regex:/^(0[1-9]|1[0-2])$/'], 
-                // Yıl en az şu anki yıl (örneğin 24) olmalı ki tarihi geçmiş kart girilmesin
+                // Yıl en az şu anki yıl (örneğin 26) olmalı ki tarihi geçmiş kart girilmesin
                 'expiry_year' => 'required|digits:2|numeric|min:' . date('y'),
                 'cvv' => 'required|digits_between:3,4',
             ]);
@@ -87,7 +87,7 @@ class PaymentController extends Controller
 
             Log::info('Kullanıcı Finansbank 3D Secure sayfasına yönlendiriliyor.');
             
-            // DİKKAT: Artık view'e gitmiyoruz, servisten gelen HTML'i direkt basıyoruz!
+            
             return response($response['html_content']);
 
         } catch (\Exception $e) {
