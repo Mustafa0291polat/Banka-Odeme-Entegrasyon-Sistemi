@@ -49,9 +49,12 @@ docker run --rm -v ${PWD}:/var/www/html -w /var/www/html laravelsail/php83-compo
 ./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail artisan migrate
 
-# Windows (PowerShell) için:
+# Windows İçin (Git Bash veya WSL Terminali kullanarak):
+./vendor/bin/sail up -d
+./vendor/bin/sail artisan key:generate
+./vendor/bin/sail artisan migrate
 
-.\vendor\bin\sail up -d
+*Not: Windows PowerShell kullanıyorsanız komutların başına 'wsl' ekleyin (Örn: wsl vendor/bin/sail up -d).*
 .\vendor\bin\sail artisan key:generate
 .\vendor\bin\sail artisan migrate
 
