@@ -56,8 +56,8 @@ docker run --rm -v ${PWD}:/var/www/html -w /var/www/html laravelsail/php83-compo
 ./vendor/bin/sail artisan migrate
 
 *Not: Windows PowerShell kullanıyorsanız komutların başına 'wsl' ekleyin (Örn: wsl vendor/bin/sail up -d).*
- wsl .\vendor\bin\sail artisan key:generate
- wsl .\vendor\bin\sail artisan migrate
+ wsl ./vendor/bin/sail artisan key:generate
+ wsl ./vendor/bin/sail artisan migrate
 
 ## 🌍 Dış Dünyaya Açılma (Webhook Handling)
 
