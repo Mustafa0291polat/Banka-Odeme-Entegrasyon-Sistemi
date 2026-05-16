@@ -27,7 +27,7 @@ Bilgisayarın açıldığında Docker Desktop uygulamasını çalıştır. Sağ 
 
 ### 1. Projeyi Klonlayın
 ```bash
-git clone [https://github.com/Mustafa0291polat/Banka-Odeme-Entegrasyon-Sistemi.git](https://github.com/Mustafa0291polat/Banka-Odeme-Entegrasyon-Sistemi.git)
+git clone https://github.com/Mustafa0291polat/Banka-Odeme-Entegrasyon-Sistemi.git
 cd Banka-Odeme-Entegrasyon-Sistemi
 (Not: ZIP olarak indirdiyseniz klasör isminin sonuna -main ekleyerek girin).
 
@@ -50,6 +50,7 @@ docker run --rm -v ${PWD}:/var/www/html -w /var/www/html laravelsail/php83-compo
 ./vendor/bin/sail artisan migrate
 
 # Windows İçin (Git Bash veya WSL Terminali kullanarak):
+
 ./vendor/bin/sail up -d
 ./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail artisan migrate
@@ -64,21 +65,16 @@ Bankanın ödeme sonucunu `callback` adresinize gönderebilmesi için localhost'
 
 **Tavsiye Edilen:**
 
-./vendor/bin/sail share
+.\ngrok http 8000     
 
-Ekranda verilen URL'i kopyalayın ve `.env` içindeki `FINANSBANK_SUCCESS_URL` ile `FINANSBANK_FAIL_URL` değişkenlerine yapıştırın. (Alternatif olarak `ngrok http 80` kullanabilirsiniz).
+Ekranda verilen URL'i kopyalayın ve `.env` içindeki `FINANSBANK_SUCCESS_URL` ile `FINANSBANK_FAIL_URL` değişkenlerine yapıştırın. 
 
 ## 🧪 Test Senaryoları ve Kartlar
 
 Proje şu an **Test (Sandbox)** ortamına ayarlıdır. `FinansbankPaymentService.php` içindeki API bilgileri QNB test terminaline aittir.
 
-| Senaryo | Kart Numarası | Son Kullanma | CVV | Tutar | Beklenen Sonuç |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **Başarılı** | `4022 7801 9828 3155` | 12 / 29 | 123 | 1.00 TL | 00 - Onay |
-| **Yetersiz Bakiye** | `4022 7801 9828 3155` | 12 / 29 | 123 | 50.000 TL | 51 - Red |
-| **Hatalı Şifre** | Herhangi bir kart | 12 / 29 | 123 | 1.00 TL | 3D Doğrulama Hatası |
 
 ## 🔍 Log Takibi
 
 Banka ile yapılan tüm iletişim `storage/logs/laravel.log` dosyasına kaydedilir. Hata durumunda logları şu komutla canlı izleyebilirsiniz:
-./vendor/bin/sail artisan logs
+wsl ./vendor/bin/sail artisan logs
