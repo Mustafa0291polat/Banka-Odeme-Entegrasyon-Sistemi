@@ -69,11 +69,6 @@ Bankanın ödeme sonucunu `callback` adresinize gönderebilmesi için localhost'
 
 Ekranda verilen URL'i kopyalayın ve `.env` içindeki `FINANSBANK_SUCCESS_URL` ile `FINANSBANK_FAIL_URL` değişkenlerine yapıştırın. 
 
-## 🧪 Test Senaryoları ve Kartlar
-
-Proje şu an **Test (Sandbox)** ortamına ayarlıdır. `FinansbankPaymentService.php` içindeki API bilgileri QNB test terminaline aittir.
-
-
 ## 🔍 Log Takibi
 
 Banka ile yapılan tüm iletişim `storage/logs/laravel.log` dosyasına kaydedilir. Hata durumunda logları şu komutla canlı izleyebilirsiniz:
