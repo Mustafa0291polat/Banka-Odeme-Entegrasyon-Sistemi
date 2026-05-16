@@ -52,6 +52,8 @@ docker run --rm -v ${PWD}:/var/www/html -w /var/www/html laravelsail/php83-compo
 # Windows İçin (Git Bash veya WSL Terminali kullanarak):
 
 ./vendor/bin/sail up -d
+# Yarım kalan ve çakışan konteynerleri temizler
+wsl ./vendor/bin/sail down
 ./vendor/bin/sail artisan key:generate
 ./vendor/bin/sail artisan migrate
 
